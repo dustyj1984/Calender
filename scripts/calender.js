@@ -5,8 +5,54 @@ var isVisable=true;
 
 
 function saveTask(){
-console.log("Button clicked");
+
+
+let title= $("#txtTitle").val();
+let dueDate= $("#txtDescription").val();
+let description= $("#txtdueDate").val();
+let tag= $("#txtTag").val();
+let color= $("#txtColor").val();
+let category= $("#txtCategory").val();
+
+
+let task= new Task(title, description, dueDate, tag, color,category);
+
+dispayTask(task);
+clearFrom();
+
 }
+
+function clearFrom(){
+    $("#txtTitle").val('');
+    $("#txtDescription").val('');
+    $("#txtdueDate").val('');
+    $("#txtTag").val('');
+    $("#txtColor").val('');
+    $("#txtCategory").val('');
+}
+function dispayTask(task){
+    let syntax=
+    `<div class="task">
+        <div class = "info">
+            <h3>${task.title}</h3>
+            <p>${task.description}</p>
+        </div>
+
+        <label class="date">
+            ${task.dueDate}
+        </label>
+
+        <div class= "extra">
+            <label>${task.category}</label>
+            <label>${task.tag}</label>
+            
+        </div>
+    </div>`;
+
+    $("#taskList").append(syntax);
+}
+
+
 
 function changeIcon(){
     if(isImportant == false){
