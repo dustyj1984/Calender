@@ -8,17 +8,35 @@ function saveTask(){
 
 
 let title= $("#txtTitle").val();
-let dueDate= $("#txtDescription").val();
-let description= $("#txtdueDate").val();
+let description= $("#txtDescription").val();
+let dueDate= $("#txtdueDate").val();
 let tag= $("#txtTag").val();
 let color= $("#txtColor").val();
 let category= $("#txtCategory").val();
 
 
 let task= new Task(title, description, dueDate, tag, color,category);
+//save on server
 
-dispayTask(task);
-clearFrom();
+$.ajax({
+    type: "POST",
+    url: "https://fsdiapi.azurewebsites.net/api/tasks",
+    data:JSON.stringify(task),
+    contentType: "application/json",  
+    succuss: function(response){     
+        dispayTask(task);
+        clearFrom();
+       
+    },
+       
+    
+    error: function(details){
+        console.log("Server says", details);
+        alert("error, we cound not save your tasks");
+    },
+   
+});
+
 
 }
 
@@ -30,12 +48,12 @@ function clearFrom(){
     $("#txtColor").val('');
     $("#txtCategory").val('');
 }
-function dispayTask(task){
-    let syntax=
-    `<div class="task">
-        <div class = "info">
-            <h3>${task.title}</h3>
-            <p>${task.description}</p>
+function displayTask(task){
+    let syntax= `<div class="card" style="border-color:${task.color}">
+   
+        <div class = "card-body">
+            <h3 class= "card-header">${task.title}</h3>
+            <p class = "card-text">${task.description}</p>
         </div>
 
         <label class="date">
@@ -43,15 +61,16 @@ function dispayTask(task){
         </label>
 
         <div class= "extra">
-            <label>${task.category}</label>
-            <label>${task.tag}</label>
-            
+        <div>
+            <label class="cat">${task.category}</label>
+        </div>
+
+            <label class="tag">${task.tag}</label>
         </div>
     </div>`;
 
     $("#taskList").append(syntax);
 }
-
 
 
 function changeIcon(){
@@ -76,10 +95,44 @@ function hideList(){
     }
 }
 
+function fetchTasks(){
+    $.ajax({
+        type: "GET",
+        url: "https://fsdiapi.azurewebsites.net/api/tasks",
+        success: function (response){
+            let allTasks= JSON.parse(response);
+            for(let i=0; i<allTasks.length; i++){
+                let task= allTasks[i];
+                if(task.name== "DustinJensen"){
+                displayTask(task);
+                }
+            }
+    },
+        error: function (details){
+            console.log("Error", details);
+        },
+    });
+}
+function testRequest(){
+    $.ajax({
+        type: "GET",
+        url:"https://fsdiapi.azurewebsites.net",
+        success: function(data){
+            console.log(data);
+
+        },
+        error: function(details){
+            console.log("error", details);
+        },
+    });
+}
+
 function init() {
     console.log("Task Manager");
+   //load prev data
+    fetchTasks();
 
-    //load prev data
+    
 
     //catch events
     $("#btnSave").click(saveTask);//jQuery

@@ -7,5 +7,7 @@ class Task {
         this.color= color;
         this.category= category;
 
+        this.name= "DustinJensen";
+
     }
 } 
